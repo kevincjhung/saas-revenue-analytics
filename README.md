@@ -1,22 +1,21 @@
 # sales-pipeline
 
-
 ## Miniforge/Conda
 
 ✅ Step 1: Create a New Environment
 
-```conda create -n finance python=3.10 pandas```
+```conda create -n salespipeline python=3.13 pandas```
 
 -n finance: the name of the environment
-python=3.10 pandas: installs Python 3.10 and pandas into it
+python=3.13 pandas: installs Python 3.13 and pandas into it
 
 
 ✅ Step 2: Activate the Environment
 
-```conda activate finance```
+```conda activate salespipeline```
 Your terminal prompt will now look like this:
 
-```(finance) kevincjhung@Kevins-MacBook-Pro %```
+```(salespipeline) kevincjhung@Kevins-MacBook-Pro %```
 This means you're "inside" the finance environment. Every package you install now is isolated to this environment.
 
 ✅ Step 3: Run your script
@@ -42,7 +41,7 @@ Deactivating the Environment
 List all environments	
 ```conda env list``` or ```conda info --envs```
 
-Remove environment	
+Remove environmen
 ```conda remove -n finance --all```
 
 Export environment file	
@@ -50,3 +49,8 @@ Export environment file
 
 Recreate from file	
 ```conda env create -f environment.yml```
+
+## Testing
+
+```python -m pytest```
+
