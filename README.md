@@ -38,7 +38,7 @@ Yes, you can use pip inside a conda environment — just try to prefer conda if 
 Deactivating the Environment
 ```conda deactivate```
 
-List all environments	
+List all environments
 ```conda env list``` or ```conda info --envs```
 
 Remove environmen
