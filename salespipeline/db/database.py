@@ -1,13 +1,13 @@
-# salespipeline/db/database.py
+# Base, session setup
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
-# Load environment variables from .env
+
 load_dotenv()
 
-# Option 1: Build URL from individual DB variables
+
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")

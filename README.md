@@ -54,3 +54,7 @@ Recreate from file
 
 ```python -m pytest```
 
+## Database
+
+Initialize database
+```python -m salespipeline.db.init_db```
