@@ -98,14 +98,3 @@ Table billing_orders {
   term_months int [note: 'Contract length']
 }
 ```
-
-### Seeding order
-
-1. accounts
-2. leads
-3. contacts
-4. opportunities
-5. opportunity_stage_history
-6. activities
-7. marketing_events
-8. billing_orders

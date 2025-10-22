@@ -17,7 +17,6 @@ from salespipeline.db.database import Base
 from salespipeline.db.enums import OpportunityStage  # 👈 import enum
 from salespipeline.db.constants import STAGE_PROBABILITIES  # 👈 import probabilities mapping
 
-
 # table names: snake_case
 # model names: PascalCase
 # column name: snake_case
@@ -55,6 +54,7 @@ class Lead(Base):
     account = relationship("Account", back_populates="leads")
     contacts = relationship("Contact", back_populates="lead")
     marketing_events = relationship("MarketingEvent", back_populates="lead")
+
 
 class Contact(Base):
     __tablename__ = "contacts"
@@ -111,6 +111,7 @@ class OpportunityStageHistory(Base):
     # Relationships
     opportunity = relationship("Opportunity", back_populates="stage_history")
 
+
 class Activity(Base):
     __tablename__ = "activities"
 
@@ -126,6 +127,7 @@ class Activity(Base):
     # Relationships
     opportunity = relationship("Opportunity", back_populates="activities")
     contact = relationship("Contact", back_populates="activities")
+
 
 class MarketingEvent(Base):
     __tablename__ = "marketing_events"

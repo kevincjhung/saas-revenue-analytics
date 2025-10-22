@@ -58,3 +58,6 @@ Recreate from file
 
 Initialize database
 ```python -m salespipeline.db.init_db```
+
+Create & Insert Accounts
+```python -m salespipeline.db.data_loading.insert_accounts```   
