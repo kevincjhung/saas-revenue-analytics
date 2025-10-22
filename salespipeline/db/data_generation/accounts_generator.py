@@ -77,5 +77,5 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
 if __name__ == "__main__":
     df = generate_account_data()
     print(df.head())
-    df.to_csv("seed_accounts.csv", index=False)
+    
     print("✅ Generated seed_accounts.csv with", len(df), "rows.")
