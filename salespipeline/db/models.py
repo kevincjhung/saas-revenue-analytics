@@ -14,8 +14,8 @@ from datetime import datetime
 import uuid  
 
 from salespipeline.db.database import Base
-from salespipeline.db.enums import OpportunityStage  # 👈 import enum
-from salespipeline.db.constants import STAGE_PROBABILITIES  # 👈 import probabilities mapping
+from salespipeline.db.enums import OpportunityStage  # import enum
+from salespipeline.db.constants import STAGE_PROBABILITIES  # import probabilities mapping
 
 # table names: snake_case
 # model names: PascalCase
@@ -28,6 +28,7 @@ class Account(Base):
     account_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     industry = Column(String(100))
+    category = Column(String(100))
     annual_revenue = Column(Numeric(15, 2))
     region = Column(String(100))
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -45,7 +46,7 @@ class Lead(Base):
     lead_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     lead_source = Column(String(50))
-    owner_id = Column(UUID(as_uuid=True))
+    owner_id = Column(Integer)
     email = Column(String(255))
     account_id = Column(UUID(as_uuid=True), ForeignKey("accounts.account_id"))
     is_marketing_qualified = Column(Boolean)

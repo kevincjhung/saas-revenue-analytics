@@ -25,6 +25,11 @@ REVENUE_LOG_NORMAL_PARAMS = {
     "Enterprise": {"mean": np.log(1e9), "sigma": 0.3},
 }
 
+# Account categories and realistic distribution
+ACCOUNT_CATEGORIES = ["prospect", "customer", "churned", "expansion"]
+CATEGORY_PROBS = [0.50, 0.25, 0.20, 0.05]  # example realistic proportions
+
+
 
 def generate_unique_company_names(n):
     """Generate n unique company names using Faker, ensuring no duplicates."""
@@ -45,6 +50,9 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
 
     # ---- annual revenue (log-normal within buckets) ----
     revenue_buckets = np.random.choice(REVENUE_BUCKETS, size=n_accounts, p=REVENUE_PROBS)
+    
+    # ---- category distribution ----
+    categories = np.random.choice(ACCOUNT_CATEGORIES, size=NUMBER_OF_ACCOUNTS, p=CATEGORY_PROBS)        
 
     def sample_revenue(bucket):
         params = REVENUE_LOG_NORMAL_PARAMS[bucket]
@@ -68,6 +76,7 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
         "name": company_names,
         "industry": industries,
         "annual_revenue": np.round(revenues, 2),
+        "category": categories,
         "region": [None] * n_accounts,
         "created_at": created_at
     })
@@ -78,5 +87,5 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
 if __name__ == "__main__":
     df = generate_account_data()
     print(df.head())
-    
+    df.to_csv("seed_accounts.csv", index=False)    
     print("✅ Generated seed_accounts.csv with", len(df), "rows.")

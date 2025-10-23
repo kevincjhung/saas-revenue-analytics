@@ -63,8 +63,8 @@ def generate_lead_dates(num_leads, months_back=12):
     """Generate realistic created_at dates with weekday and seasonal weighting."""
     now = datetime.utcnow()
     start_date = now - timedelta(days=months_back * 30)
-
     dates = []
+    
     while len(dates) < num_leads:
         # Chooses random day within past months_back
         random_day = start_date + timedelta(days=random.randint(0, months_back * 30))
@@ -88,24 +88,14 @@ def assign_lead_sources(num_leads):
 
 
 def assign_bdr_owner(num_leads):
-    """Round-robin assign to BDRs."""
-    owners = [f"BDR-{i+1}" for i in range(NUM_BDRS)]
-    return [owners[i % NUM_BDRS] for i in range(num_leads)]
+    """Round-robin assign to BDRs using integer IDs."""
+    return [i % NUM_BDRS + 1 for i in range(num_leads)]  # 1,2,...,17, repeat
+
 
 # ! INCOMPLETE
 # def assign_account_links(num_leads, account_ids):
     """65% new (no account), 35% attach to random existing accounts."""
-    account_link_flags = np.random.choice(
-        [None, "existing"], size=num_leads, p=[0.65, 0.35]
-    )
-
-    linked_accounts = []
-    for flag in account_link_flags:
-        if flag is None:
-            linked_accounts.append(None)
-        else:
-            linked_accounts.append(str(random.choice(account_ids)))
-    return linked_accounts
+    pass
 
 
 def determine_mql_status(lead_sources):
@@ -126,6 +116,8 @@ def generate_leads_df(account_ids, num_leads=TOTAL_LEADS):
     created_dates = generate_lead_dates(num_leads)
     sources = assign_lead_sources(num_leads)
     owners = assign_bdr_owner(num_leads)
+    
+
     # accounts = assign_account_links(num_leads, account_ids) # ! INCOMPLETE
     mql_flags = determine_mql_status(sources)
 
