@@ -6,7 +6,8 @@ import uuid
 
 fake = Faker()
 
-# ---- constants ----
+
+# constants
 NUMBER_OF_ACCOUNTS = 3000
 
 # Industry categories and distribution
