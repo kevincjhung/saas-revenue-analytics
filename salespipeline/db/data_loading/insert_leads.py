@@ -1,9 +1,11 @@
 import pandas as pd
+
 from sqlalchemy.orm import Session
 from salespipeline.db import models
 from salespipeline.db.database import SessionLocal
 from salespipeline.db.data_generation.leads_generator import generate_leads_df
 from sqlalchemy.exc import SQLAlchemyError
+
 
 def insert_leads_from_df(session: Session, df: pd.DataFrame, batch_size: int = 500):
     """
