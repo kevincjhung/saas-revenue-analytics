@@ -15,6 +15,7 @@ def insert_leads_from_df(session: Session, df: pd.DataFrame, batch_size: int = 5
     for start in range(0, total_rows, batch_size):
         end = start + batch_size
         batch = df.iloc[start:end]
+        
         objects = [
             models.Lead(
                 lead_id=row['lead_id'] if 'lead_id' in row else None,
@@ -29,17 +30,16 @@ def insert_leads_from_df(session: Session, df: pd.DataFrame, batch_size: int = 5
         ]
         session.bulk_save_objects(objects)
         session.commit()  # persist batch
-        print(f"Inserted accounts {start+1} to {min(end, total_rows)}")
 
 
 def main():
     # Generate synthetic leads
-    df_leads = generate_leads_df(3000)  # adjust number as needed
+    df_leads = generate_leads_df()
 
     session = SessionLocal()
     try:
         insert_leads_from_df(session, df_leads)
-        print("✅ All leads inserted successfully.")
+        print("\n ✅ All leads inserted successfully. \n")
     except SQLAlchemyError as e:
         session.rollback()
         print("Error during DB operation:", e)

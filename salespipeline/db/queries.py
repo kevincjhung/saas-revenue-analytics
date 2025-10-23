@@ -29,7 +29,7 @@ def main():
     accounts = get_all_accounts()
     print(f"\nTotal accounts: {len(accounts)}\n")
     
-    for account in accounts[:5]:  # print first 5 for demo
+    for account in accounts[:10]:
         print(f"{account.account_id} | {account.name} | {account.annual_revenue} \n")
 
 

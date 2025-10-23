@@ -3,13 +3,13 @@ import numpy as np
 import random
 from faker import Faker
 from datetime import datetime, timedelta
+from salespipeline.db.queries import get_all_accounts
 
 import uuid
 
 fake = Faker()
 
 
-# New Leads (over 2 years)
 
 NUM_LEADS_PER_MONTH_INBOUND = 1800
 NUM_LEADS_PER_MONTH_OUTBOUND = 700
@@ -93,10 +93,24 @@ def assign_bdr_owner(num_leads):
     return [i % NUM_BDRS + 1 for i in range(num_leads)]  # 1,2,...,17, repeat
 
 
-# ! INCOMPLETE
-# def assign_account_links(num_leads, account_ids):
+def assign_account_links(num_leads=TOTAL_LEADS):
     """65% new (no account), 35% attach to random existing accounts."""
-    pass
+    accounts = get_all_accounts()  # Expected to return list of account objects
+    if not accounts:
+        print("⚠️ Warning: No accounts found in DB.")
+        return [None] * num_leads
+
+    account_ids = [a.account_id for a in accounts]
+    account_link_flags = np.random.choice([None, "existing"], size=num_leads, p=[0.65, 0.35])
+
+    linked_accounts = []
+    for flag in account_link_flags:
+        if flag is None:
+            linked_accounts.append(None)
+        else:
+            linked_accounts.append(str(random.choice(account_ids)))
+            
+    return linked_accounts
 
 
 def determine_mql_status(lead_sources):
@@ -109,17 +123,16 @@ def determine_mql_status(lead_sources):
     return mql_flags
 
 
-def generate_leads_df(account_ids, num_leads=TOTAL_LEADS):
+def generate_leads_df():
     """Main generation function for leads data."""
+    num_leads=TOTAL_LEADS
+    
     lead_ids = [uuid.uuid4() for _ in range(num_leads)]
     emails = [fake.unique.email() for _ in range(num_leads)]
-
     created_dates = generate_lead_dates(num_leads)
     sources = assign_lead_sources(num_leads)
     owners = assign_bdr_owner(num_leads)
-    
-
-    # accounts = assign_account_links(num_leads, account_ids) # ! INCOMPLETE
+    accounts = assign_account_links(num_leads)
     mql_flags = determine_mql_status(sources)
 
     df_leads = pd.DataFrame({
@@ -128,7 +141,7 @@ def generate_leads_df(account_ids, num_leads=TOTAL_LEADS):
         "lead_source": sources,
         "owner_id": owners,
         "email": emails,
-        # "account_id": accounts,
+        "account_id": accounts,
         "is_marketing_qualified": mql_flags
     })
 
@@ -167,19 +180,17 @@ def count_by_lead_source(df_leads):
     return df_leads.groupby('lead_source').size().sort_values(ascending=False)
 
 
-
+def smoke_test_lead_distribution():
+    print("lead counts by month: " + count_by_month(df))
+    print("lead counts by weekday: " + count_by_weekday(df))
+    print("lead counts by source; " + count_by_lead_source(df))
 
 
 if __name__ == "__main__":
-    # Simulate existing account IDs (in real case, read from DB)
-    mock_account_ids = [uuid.uuid4() for _ in range(3000)]
-
-    df = generate_leads_df(mock_account_ids)
+    df = generate_leads_df()
     
-    # For Manual testing, to be moved
-    # print(count_by_month(df))
-    # print(count_by_weekday(df))
-    # print(count_by_lead_source(df))
+    # smoke_test_lead_distribution()
+    
     
     df.to_csv("seed_leads.csv", index=False)
-    print(f"Generated seed_leads.csv with {len(df)} rows.")
+    print(f"\n Generated seed_leads.csv with {len(df)} rows.")
