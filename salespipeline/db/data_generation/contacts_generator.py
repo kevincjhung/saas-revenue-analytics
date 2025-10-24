@@ -86,21 +86,6 @@ def generate_contacts_from_leads(df_leads: pd.DataFrame) -> pd.DataFrame:
     df_contacts = pd.DataFrame(contact_rows)
     return df_contacts
 
-# TODO: compare to constants/params, place in test file later on
-def summarize_contacts(df_contacts: pd.DataFrame):
-    """
-    Quick sanity checks on contact generation.
-    """
-    print("\n Contact distribution by title:")
-    print((df_contacts["title"].value_counts(normalize=True) * 100).round(1).to_string())
-
-    print("\n Contact distribution by geo:")
-    print((df_contacts["geo"].value_counts(normalize=True) * 100).round(1).to_string())
-
-    print(f"\nTotal contacts generated: {len(df_contacts):,}")
-    print(f"Unique emails: {df_contacts['email'].nunique():,}")
-    print(f"Avg contacts per lead: {len(df_contacts) / df_contacts['lead_id'].nunique():.2f}")
-
 
 if __name__ == "__main__":
     
