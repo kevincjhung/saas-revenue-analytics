@@ -47,10 +47,10 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
     company_names = generate_unique_company_names(n_accounts)
 
     # ---- industry distribution ----
-    industries = np.random.choice(INDUSTRY_CHOICES, size=n_accounts, p=INDUSTRY_PROBS)
+    industries = np.random.choice(INDUSTRY_CHOICES, size=NUMBER_OF_ACCOUNTS, p=INDUSTRY_PROBS)
 
     # ---- annual revenue (log-normal within buckets) ----
-    revenue_buckets = np.random.choice(REVENUE_BUCKETS, size=n_accounts, p=REVENUE_PROBS)
+    revenue_buckets = np.random.choice(REVENUE_BUCKETS, size=NUMBER_OF_ACCOUNTS, p=REVENUE_PROBS)
     
     # ---- category distribution ----
     categories = np.random.choice(ACCOUNT_CATEGORIES, size=NUMBER_OF_ACCOUNTS, p=CATEGORY_PROBS)        
@@ -88,5 +88,5 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
 if __name__ == "__main__":
     df = generate_account_data()
     print(df.head())
-    df.to_csv("seed_accounts.csv", index=False)    
-    print("✅ Generated seed_accounts.csv with", len(df), "rows.")
+    df.to_csv("accounts.csv", index=False)    
+    print("✅ Generated accounts.csv with", len(df), "rows.")

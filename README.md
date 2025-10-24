@@ -52,7 +52,7 @@ Recreate from file
 
 ## Testing
 
-```python -m pytest```
+```python -m pytest -v```
 
 ## Database
 

@@ -192,5 +192,5 @@ if __name__ == "__main__":
     # smoke_test_lead_distribution()
     
     
-    df.to_csv("seed_leads.csv", index=False)
-    print(f"\n Generated seed_leads.csv with {len(df)} rows.")
+    df.to_csv("leads.csv", index=False)
+    print(f"\n Generated leads.csv with {len(df)} rows.")

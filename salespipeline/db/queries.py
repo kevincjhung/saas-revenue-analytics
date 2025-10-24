@@ -14,10 +14,20 @@ def get_session() -> Session:
 
 
 def get_all_accounts() -> List[Account]:
-    """Return all leads in the database."""
+    """Return all accounts in the database."""
     try:
         with get_session() as session:
             result = session.execute(select(Account)).scalars().all()
+            return result
+    except SQLAlchemyError as e:
+        print(f"Error fetching all accounts: {e}")
+        return []
+
+
+def get_all_leads() -> List[Lead]:
+    try:
+        with get_session() as session:
+            result = session.execute(select(Lead)).scalars().all()
             return result
     except SQLAlchemyError as e:
         print(f"Error fetching all leads: {e}")
@@ -26,11 +36,16 @@ def get_all_accounts() -> List[Account]:
 
 
 def main():
-    accounts = get_all_accounts()
-    print(f"\nTotal accounts: {len(accounts)}\n")
+    # accounts = get_all_accounts()
+    # print(f"\nTotal accounts: {len(accounts)}\n")
     
-    for account in accounts[:10]:
-        print(f"{account.account_id} | {account.name} | {account.annual_revenue} \n")
+    # for account in accounts[:10]:
+    #     print(f"{account.account_id} | {account.name} | {account.annual_revenue} \n")
+    
+    leads = get_all_leads()
+    print(f"\nTotal accounts: {len(leads)}\n")
+    for lead in leads[:10]:
+        print(f"{lead.lead_id} | {lead.lead_source} | {lead.email} \n")
 
 
 if __name__ == "__main__":
