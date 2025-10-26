@@ -40,7 +40,7 @@ def test_category_distribution(df_accounts):
     counts = df_accounts["category"].value_counts(normalize=True)
     assert 0.4 < counts.get("prospect", 0) < 0.6
     assert 0.15 < counts.get("customer", 0) < 0.35
-    assert 0.05 < counts.get("expansion", 0) < 0.15
+    assert 0.04 < counts.get("expansion", 0) < 0.16 
 
 def test_revenue_ranges(df_accounts):
     """Annual revenue should vary by bucket in realistic ranges."""

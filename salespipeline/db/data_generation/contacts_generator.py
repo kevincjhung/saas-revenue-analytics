@@ -91,9 +91,6 @@ if __name__ == "__main__":
     
     df_leads = convert_leads_to_df()
     df_contacts = generate_contacts_from_leads(df_leads)
-
-    # summarize_contacts(df_contacts)
-
     df_contacts.to_csv("contacts.csv", index=False)
     print("\n✅ Generated contacts.csv successfully.")
     

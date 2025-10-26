@@ -10,15 +10,13 @@ import uuid
 fake = Faker()
 
 
-
 NUM_LEADS_PER_MONTH_INBOUND = 1800
 NUM_LEADS_PER_MONTH_OUTBOUND = 700
 NUM_MONTHS = 12  # last year’s worth of data
 
 TOTAL_LEADS = (NUM_LEADS_PER_MONTH_INBOUND + NUM_LEADS_PER_MONTH_OUTBOUND) * NUM_MONTHS
 
-
-# Lead sources and probabilities
+# Lead sources and probabilitiesw
 LEAD_SOURCES = {
     "Website/Organic": 0.30,
     "Paid Ads": 0.20,
@@ -148,49 +146,7 @@ def generate_leads_df():
     return df_leads
 
 
-def count_by_month(df_leads):
-    """
-    Count the number of leads created per month.
-    Returns a Pandas Series indexed by 'YYYY-MM' string.
-    """
-    # Convert to year-month format
-    df_leads['year_month'] = df_leads['created_at'].dt.to_period('M')
-    print(df_leads.groupby('year_month').size())
-    
-    return df_leads.groupby('year_month').size()
-
-
-def count_by_weekday(df_leads):
-    """
-    Count the number of leads created per day of the week.
-    Returns a Pandas Series indexed by weekday name.
-    """
-    df_leads['weekday'] = df_leads['created_at'].dt.day_name()
-    
-    return df_leads.groupby('weekday').size().reindex([
-        'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-    ])
-
-
-def count_by_lead_source(df_leads):
-    """
-    Count the number of leads by lead_source.
-    Returns a Pandas Series indexed by lead_source.
-    """
-    return df_leads.groupby('lead_source').size().sort_values(ascending=False)
-
-
-def smoke_test_lead_distribution():
-    print("lead counts by month: " + count_by_month(df))
-    print("lead counts by weekday: " + count_by_weekday(df))
-    print("lead counts by source; " + count_by_lead_source(df))
-
-
 if __name__ == "__main__":
-    df = generate_leads_df()
-    
-    # smoke_test_lead_distribution()
-    
-    
+    df = generate_leads_df()    
     df.to_csv("leads.csv", index=False)
     print(f"\n Generated leads.csv with {len(df)} rows.")

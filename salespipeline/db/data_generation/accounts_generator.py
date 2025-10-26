@@ -87,6 +87,5 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
 
 if __name__ == "__main__":
     df = generate_account_data()
-    print(df.head())
     df.to_csv("accounts.csv", index=False)    
     print("✅ Generated accounts.csv with", len(df), "rows.")

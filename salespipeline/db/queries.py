@@ -34,7 +34,6 @@ def get_all_leads() -> List[Lead]:
         return []
 
 
-
 def main():
     # accounts = get_all_accounts()
     # print(f"\nTotal accounts: {len(accounts)}\n")
