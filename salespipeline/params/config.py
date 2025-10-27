@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 # =============================================================================
 # ACCOUNTS GENERATOR CONFIGURATION
 # =============================================================================
@@ -118,6 +117,7 @@ MONTH_MULTIPLIERS = {
 
 # Number of business development reps responsible for outbound lead generation
 NUM_BDRS = 17
+
 
 
 # =============================================================================

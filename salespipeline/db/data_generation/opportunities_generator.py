@@ -253,5 +253,5 @@ def generate_opportunities_df():
 
 if __name__ == "__main__":
     df = generate_opportunities_df()
-    # df.to_csv("opportunities.csv", index=False)
+    df.to_csv("opportunities.csv", index=False)
     print(f"✅ Generated opportunities.csv with {len(df)}")
