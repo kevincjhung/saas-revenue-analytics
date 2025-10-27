@@ -9,24 +9,13 @@ from salespipeline.db.queries import get_all_leads
 fake = Faker()
 fake.unique.clear() 
 
+from salespipeline.params.config import (
+    CONTACTS_PER_LEAD,
+    CONTACTS_PER_LEAD_WEIGHTS,
+    TITLE_DISTRIBUTION,
+    GEO_DISTRIBUTION
+)
 
-CONTACTS_PER_LEAD = [1, 2, 3]
-CONTACTS_PER_LEAD_WEIGHTS = [0.75, 0.20, 0.05]
-
-TITLE_DISTRIBUTION = {
-    "VP/Director/C-Level": 0.23,
-    "Manager/Team Lead": 0.45,
-    "Individual Contributor/Specialist": 0.22,
-    "Other": 0.10
-}
-
-GEO_DISTRIBUTION = {
-    "US": 0.50,
-    "Canada": 0.15,
-    "Europe": 0.18,
-    "Asia Pacific": 0.10,
-    "Rest of World": 0.07
-}
 
 
 def convert_leads_to_df():

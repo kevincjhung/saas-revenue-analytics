@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 from salespipeline.db.data_generation import opportunities_generator as og
-
+from salespipeline.params.config import LEAD_SOURCES_OPPORTUNITIES  
 
 @pytest.fixture(scope="module")
 def df_opps():
@@ -50,7 +50,7 @@ def test_data_types(df_opps):
     assert df_opps["amount"].apply(lambda x: isinstance(x, (float, int, np.floating))).all()
     assert df_opps["is_closed"].apply(lambda x: isinstance(x, (bool, np.bool_))).all()
     assert df_opps["currency"].apply(lambda x: isinstance(x, str)).all()
-    assert df_opps["lead_source"].apply(lambda x: x in og.LEAD_SOURCES.keys()).all()
+    assert df_opps["lead_source"].apply(lambda x: x in og.LEAD_SOURCES_OPPORTUNITIES.keys()).all()
     assert df_opps["product_line"].apply(lambda x: x in og.PRODUCT_LINES.keys()).all()
 
 
@@ -60,7 +60,7 @@ def test_lead_source_distribution(df_opps):
     """Lead source proportions should roughly follow defined weights."""
     
     counts = df_opps["lead_source"].value_counts(normalize=True)
-    for src, expected_p in og.LEAD_SOURCES.items():
+    for src, expected_p in og.LEAD_SOURCES_OPPORTUNITIES.items():
         assert abs(counts.get(src, 0) - expected_p) < 0.05  # ±5% tolerance
 
 

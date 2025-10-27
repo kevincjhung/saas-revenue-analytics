@@ -1,17 +1,22 @@
 import pytest
 import pandas as pd
 import numpy as np
+import random
 from salespipeline.db.data_generation import leads_generator as lg
 
+
+# --- Fixtures ---
 
 @pytest.fixture(scope="module")
 def df_leads():
     """Generate leads once per test module to avoid rework."""
     np.random.seed(42)
+    random.seed(42)
     return lg.generate_leads_df()
 
 
-# --- Basic structure and schema tests --- #
+
+# --- Basic structure and schema tests ---
 
 def test_row_count(df_leads):
     """Ensure total lead count matches configuration constant."""
@@ -27,7 +32,7 @@ def test_expected_columns(df_leads):
         "owner_id",
         "email",
         "account_id",
-        "is_marketing_qualified"
+        "is_marketing_qualified",
     }
     assert set(df_leads.columns) == expected
 
@@ -42,13 +47,15 @@ def test_data_types(df_leads):
     assert df_leads["is_marketing_qualified"].apply(lambda x: isinstance(x, (bool, np.bool_))).all()
 
 
-# --- Distribution & realism tests --- #
+
+# --- Distribution & realism tests --- 
 
 def test_lead_source_distribution(df_leads):
     """Lead source proportions should roughly follow defined weights."""
     counts = df_leads["lead_source"].value_counts(normalize=True)
-    for src, expected_p in lg.LEAD_SOURCES.items():
-        assert abs(counts.get(src, 0) - expected_p) < 0.05  # ±5% tolerance
+    for src, expected_p in lg.LEAD_SOURCES_LEADS.items():
+        observed_p = counts.get(src, 0)
+        assert abs(observed_p - expected_p) < 0.05, f"{src} out of tolerance: {observed_p:.3f}"
 
 
 def test_weekday_distribution(df_leads):
@@ -63,7 +70,7 @@ def test_weekday_distribution(df_leads):
 def test_monthly_seasonality(df_leads):
     """Simulated monthly patterns should show some variation."""
     counts_by_month = df_leads["created_at"].dt.month.value_counts(normalize=True)
-    assert counts_by_month.max() / counts_by_month.min() > 1.2  # at least 20% swing due to multipliers
+    assert counts_by_month.max() / counts_by_month.min() > 1.2  # at least 20% swing
 
 
 def test_owner_assignment(df_leads):
@@ -71,7 +78,7 @@ def test_owner_assignment(df_leads):
     owners = df_leads["owner_id"].value_counts(normalize=True)
     assert owners.index.min() == 1
     assert owners.index.max() == lg.NUM_BDRS
-    assert owners.std() < 0.02  # should be roughly even distribution
+    assert owners.std() < 0.02  # roughly even distribution
 
 
 def test_mql_rate_ranges(df_leads):
@@ -79,9 +86,10 @@ def test_mql_rate_ranges(df_leads):
     summary = df_leads.groupby("lead_source")["is_marketing_qualified"].mean()
     for src, (low, high) in lg.MQL_RATES.items():
         observed = summary.get(src, 0)
-        assert low * 0.8 <= observed <= high * 1.2  # allow 20% slack due to randomness
+        assert low * 0.8 <= observed <= high * 1.2, f"{src} observed={observed:.3f}, expected {low:.2f}-{high:.2f}"
+
 
 def test_account_link_ratio(df_leads):
     """Roughly 35% of leads should be linked to existing accounts."""
     link_rate = df_leads["account_id"].notna().mean()
-    assert 0.3 < link_rate < 0.4
+    assert 0.3 < link_rate < 0.4, f"Observed link rate {link_rate:.3f} outside expected range"

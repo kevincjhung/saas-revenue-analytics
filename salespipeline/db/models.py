@@ -10,12 +10,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID 
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid  
 
 from salespipeline.db.database import Base
 from salespipeline.db.enums import OpportunityStage  # import enum
-from salespipeline.db.constants import STAGE_PROBABILITIES  # import probabilities mapping
+
 
 # table names: snake_case
 # model names: PascalCase
@@ -31,7 +31,7 @@ class Account(Base):
     category = Column(String(100))
     annual_revenue = Column(Numeric(15, 2))
     region = Column(String(100))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     # Relationships
     leads = relationship("Lead", back_populates="account")
@@ -44,7 +44,7 @@ class Lead(Base):
     __tablename__ = "leads"
 
     lead_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
     lead_source = Column(String(50))
     owner_id = Column(Integer)
     email = Column(String(255))
@@ -63,7 +63,7 @@ class Contact(Base):
     contact_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     lead_id = Column(UUID(as_uuid=True), ForeignKey("leads.lead_id"))
     account_id = Column(UUID(as_uuid=True), ForeignKey("accounts.account_id"))
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
     email = Column(String(255))
     title = Column(String(100))
     geo = Column(String(100))
@@ -80,7 +80,7 @@ class Opportunity(Base):
     opportunity_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     account_id = Column(UUID(as_uuid=True), ForeignKey("accounts.account_id"), nullable=False)
     owner_id = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
     close_date = Column(DateTime)
     amount = Column(Numeric(15, 2))
     currency = Column(String(10), default="USD")

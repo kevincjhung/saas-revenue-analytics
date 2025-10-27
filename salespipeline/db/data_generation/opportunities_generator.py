@@ -8,77 +8,22 @@ from salespipeline.db.queries import get_all_accounts
 
 fake = Faker()
 
-# ! num_opps to be factored out into constant, then moved to separate file
+from salespipeline.params.config import (
+    NUM_AES,
+    TIME_SPAN_DAYS,
+    LEAD_SOURCES_OPPORTUNITIES,
+    PRODUCT_LINES,
+    CURRENCY,
+    STAGES,
+    STAGE_WEIGHTS,
+    STAGE_PROBABILITY_RANGES,
+    OPP_COUNT_WEIGHTS,
+    SALES_CYCLE_WEIGHTS,
+    CLOSE_OUTCOMES,
+    CLOSE_STATUS_WEIGHTS,
+    ACV_PARAMS
+)
 
-NUM_AES = 20
-TIME_SPAN_DAYS = 730  # two years of pipeline history
-
-# --- Lead sources ---
-LEAD_SOURCES = {
-    "Inbound": 0.35,
-    "Outbound": 0.40,
-    "Partner/Channel": 0.10,
-    "Event/Webinar": 0.05,
-    "Referral": 0.05,
-    "Other": 0.05,
-}
-
-# --- Product lines ---
-PRODUCT_LINES = {
-    "Core": 0.40,
-    "Pro": 0.35,
-    "Enterprise": 0.20,
-    "Add-Ons": 0.05,
-}
-
-# --- Currencies ---
-CURRENCY = "CAD"
-
-# --- Stage definitions ---
-STAGES = ["Prospecting", "Discovery", "Proposal", "Negotiation", "Closed"]
-STAGE_WEIGHTS = [0.25, 0.31, 0.25, 0.19]
-
-STAGE_PROBABILITY_RANGES = {
-    "Prospecting": (0.05, 0.10),
-    "Discovery": (0.10, 0.25),
-    "Proposal": (0.25, 0.45),
-    "Negotiation": (0.45, 0.70),
-    "Closed": (0.0, 1.0),
-}
-
-# --- Opportunity counts per account ---
-OPP_COUNT_WEIGHTS = {
-    "low": (0.8, (1, 2)),
-    "medium": (0.15, (3, 5)),
-    "high": (0.05, (5, 5)),
-}
-
-# --- Sales cycle lengths (days) ---
-SALES_CYCLE_WEIGHTS = {
-    "short": (0.1, (15, 30)),
-    "medium": (0.5, (60, 90)),
-    "long": (0.3, (90, 180)),
-    "very_long": (0.1, (180, 360)),
-}
-
-# --- Close outcomes for closed deals ---
-CLOSE_OUTCOMES = {
-    "closed_won": 0.33,
-    "closed_lost": 0.58,
-    "disqualified": 0.09,
-}
-
-CLOSE_STATUS_WEIGHTS = [0.6, 0.4]  # closed, open
-
-# --- ACV distribution parameters ---
-ACV_PARAMS = {
-    "Inbound": (np.log(20000), 0.5),
-    "Outbound": (np.log(40000), 0.6),
-    "Partner/Channel": (np.log(75000), 0.5),
-    "Event/Webinar": (np.log(15000), 0.4),
-    "Referral": (np.log(30000), 0.5),
-    "Other": (np.log(25000), 0.5),
-}
 
 
 # Determine how many opportunities each account should have
@@ -154,7 +99,7 @@ def generate_opportunity_amounts(num_opps, lead_sources):
     num_opps : int
         Number of opportunities to generate. 
     lead_sources : list of str
-        Lead source for each opportunity (must correspond to `LEAD_SOURCES` keys).
+        Lead source for each opportunity (must correspond to `LEAD_SOURCES_OPPORTUNITIES` keys).
 
     Returns
     -------
@@ -263,7 +208,7 @@ def generate_opportunities_df():
     owners = assign_owners(total_opps)
     created_dates, close_dates = generate_opportunity_dates(total_opps)
     lead_sources = np.random.choice(
-        list(LEAD_SOURCES.keys()), size=total_opps, p=list(LEAD_SOURCES.values())
+        list(LEAD_SOURCES_OPPORTUNITIES.keys()), size=total_opps, p=list(LEAD_SOURCES_OPPORTUNITIES.values())
     )
     amounts = generate_opportunity_amounts(total_opps, lead_sources)
     product_lines = np.random.choice(

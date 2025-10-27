@@ -2,66 +2,37 @@ import pandas as pd
 import numpy as np
 import random
 from faker import Faker
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from salespipeline.db.queries import get_all_accounts
+from salespipeline.params import config
+
+# Re-export constants for tests
+LEAD_SOURCES = config.LEAD_SOURCES_LEADS
+MQL_RATES = config.MQL_RATES
+TOTAL_LEADS = config.TOTAL_LEADS
+NUM_BDRS = config.NUM_BDRS
 
 import uuid
 
 
 fake = Faker()
+from salespipeline.params.config import (
+    NUM_LEADS_PER_MONTH_OUTBOUND,
+    NUM_LEADS_PER_MONTH_INBOUND,
+    NUM_MONTHS,
+    TOTAL_LEADS,
+    LEAD_SOURCES_LEADS,
+    MQL_RATES,
+    WEEKDAY_WEIGHTS,
+    MONTH_MULTIPLIERS,
+    NUM_BDRS
+)
 
-
-NUM_LEADS_PER_MONTH_INBOUND = 1800
-NUM_LEADS_PER_MONTH_OUTBOUND = 700
-NUM_MONTHS = 12  # last year’s worth of data
-
-TOTAL_LEADS = (NUM_LEADS_PER_MONTH_INBOUND + NUM_LEADS_PER_MONTH_OUTBOUND) * NUM_MONTHS
-
-# Lead sources and probabilitiesw
-LEAD_SOURCES = {
-    "Website/Organic": 0.30,
-    "Paid Ads": 0.20,
-    "Outbound BDR": 0.25,
-    "Events/Webinars": 0.08,
-    "Referral/Partner": 0.07,
-    "Other": 0.10
-}
-
-# MQL conversion rates by source (approximate realistic ranges)
-MQL_RATES = {
-    "Website/Organic": (0.15, 0.25),
-    "Paid Ads": (0.08, 0.12),
-    "Outbound BDR": (0.20, 0.30),
-    "Events/Webinars": (0.10, 0.15),
-    "Referral/Partner": (0.25, 0.35),
-    "Other": (0.05, 0.10)
-}
-
-# Temporal pattern: weekday distribution
-WEEKDAY_WEIGHTS = {
-    0: 0.10,  # Monday
-    1: 0.25,  # Tuesday
-    2: 0.25,  # Wednesday
-    3: 0.20,  # Thursday
-    4: 0.10,  # Friday
-    5: 0.07,  # Saturday
-    6: 0.03   # Sunday (low activity)
-}
-
-# Seasonal multipliers (simulate slower summer & winter)
-MONTH_MULTIPLIERS = {
-    1: 0.9,  2: 1.0,  3: 1.1,
-    4: 1.1,  5: 1.0,  6: 0.8,
-    7: 0.7,  8: 0.75, 9: 1.1,
-    10: 1.1, 11: 1.0, 12: 0.8
-}
-
-NUM_BDRS = 17
 
 
 def generate_lead_dates(num_leads, months_back=12):
     """Generate realistic created_at dates with weekday and seasonal weighting."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     start_date = now - timedelta(days=months_back * 30)
     dates = []
     
@@ -80,9 +51,9 @@ def generate_lead_dates(num_leads, months_back=12):
 def assign_lead_sources(num_leads):
     """Assign lead sources based on fixed probabilities."""
     sources = np.random.choice(
-        list(LEAD_SOURCES.keys()),
+        list(LEAD_SOURCES_LEADS.keys()),
         size=num_leads,
-        p=list(LEAD_SOURCES.values())
+        p=list(LEAD_SOURCES_LEADS.values())
     )
     return sources
 

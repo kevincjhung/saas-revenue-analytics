@@ -1,34 +1,21 @@
 import pandas as pd
 import numpy as np
-from faker import Faker
-from datetime import datetime, timedelta
-
 import uuid
 
+from faker import Faker
+from datetime import datetime, timezone, timedelta
+from salespipeline.params.config import (
+    NUMBER_OF_ACCOUNTS,
+    INDUSTRY_CHOICES,
+    INDUSTRY_PROBS,
+    REVENUE_BUCKETS,
+    REVENUE_PROBS,
+    REVENUE_LOG_NORMAL_PARAMS,
+    ACCOUNT_CATEGORIES,
+    CATEGORY_PROBS
+)
+
 fake = Faker()
-
-
-# constants
-NUMBER_OF_ACCOUNTS = 3000
-
-# Industry categories and distribution
-INDUSTRY_CHOICES = ["Technology", "Professional Services", "Manufacturing", "Finance", "Healthcare"]
-INDUSTRY_PROBS = [0.25, 0.20, 0.20, 0.20, 0.15]
-
-# Annual revenue buckets and distribution
-REVENUE_BUCKETS = ["SMB", "Mid-Market", "Upper-Mid", "Enterprise"]
-REVENUE_PROBS = [0.40, 0.40, 0.15, 0.05]
-
-REVENUE_LOG_NORMAL_PARAMS = {
-    "SMB": {"mean": np.log(5e6), "sigma": 0.5},
-    "Mid-Market": {"mean": np.log(50e6), "sigma": 0.5},
-    "Upper-Mid": {"mean": np.log(200e6), "sigma": 0.4},
-    "Enterprise": {"mean": np.log(1e9), "sigma": 0.3},
-}
-
-# Account categories and realistic distribution
-ACCOUNT_CATEGORIES = ["prospect", "customer", "churned", "expansion"]
-CATEGORY_PROBS = [0.50, 0.25, 0.20, 0.05]  # example realistic proportions
 
 
 
@@ -62,7 +49,7 @@ def generate_account_data(n_accounts: int = NUMBER_OF_ACCOUNTS):
     revenues = [sample_revenue(b) for b in revenue_buckets]
 
     # ---- creation dates ----
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     cutoff_12mo = int(n_accounts * 0.4)
     cutoff_24mo = n_accounts - cutoff_12mo
 
