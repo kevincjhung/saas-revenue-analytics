@@ -50,7 +50,9 @@ Recreate from file
 
 ## Testing
 
-```python -m pytest -v```
+```bash 
+  python -m pytest -v
+```
 
 ## Database
 
@@ -58,7 +60,23 @@ Initialize database
 ```python -m salespipeline.db.init_db```
 
 Create & Insert Accounts
-```python -m salespipeline.db.data_loading.insert_accounts```   
+```bash
+  python -m salespipeline.db.data_loading.load_accounts
+```   
+
+```bash 
+  python -m salespipeline.db.data_loading.load_leads
+```   
+
+```bash
+  python -m salespipeline.db.data_loading.load_contacts
+```
+
+```bash
+  python -m salespipeline.db.data_loading.load_opportunities
+``` 
+
+
 
 
 ## Data model

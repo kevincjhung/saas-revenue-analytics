@@ -7,6 +7,7 @@ from salespipeline.db.queries import get_all_accounts
 
 import uuid
 
+
 fake = Faker()
 
 
