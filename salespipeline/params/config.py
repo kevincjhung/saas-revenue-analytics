@@ -148,7 +148,7 @@ PRODUCT_LINES = {
     "Add-Ons": 0.05,
 }
 
-# --- Currencies ---
+# Currencies
 CURRENCY = "CAD"
 
 # Pipeline stages and their relative occurrence frequencies
@@ -198,3 +198,74 @@ ACV_PARAMS = {
     "Referral": (np.log(30000), 0.5),
     "Other": (np.log(25000), 0.5),
 }
+
+# -------------------------------------------------------------------
+# OPPORTUNITY_STAGE_HISTORIES GENERATOR
+# -------------------------------------------------------------------
+
+# --- Sales pipeline stage definitions (post-SQL opportunities only) ---
+STAGES = [
+    "Discovery",        # Initial qualification / needs analysis
+    "Proposal",         # Pricing, scoping, business case
+    "Negotiation",      # Legal, commercial, redlines
+    "Closed"            # Won or lost
+]
+
+# --- Base median duration per stage (in days) ---
+# Defines baseline cycle times before multipliers (deal size, source, etc.)
+BASE_STAGE_DURATIONS = {
+    "Discovery": {"median": 18, "iqr": (7, 35), "tail": (60, 120)},
+    "Proposal": {"median": 22, "iqr": (10, 45), "tail": (90, 150)},
+    "Negotiation": {"median": 30, "iqr": (15, 80), "tail": (150, 360)}
+}
+
+# --- Deal size classification thresholds (for ACV) ---
+# Used to categorize opportunities into small/mid/large.
+DEAL_SIZE_THRESHOLDS = {
+    "small": 15_000,
+    "mid": 50_000
+}
+
+# --- Multipliers by deal size ---
+# Simulates longer sales cycles for larger deals.
+DEAL_SIZE_MULTIPLIERS = {
+    "small": (0.5, 0.8),
+    "mid": (0.9, 1.1),
+    "large": (1.5, 3.0)
+}
+
+# --- Lead source multipliers ---
+# Reflects efficiency differences between channels.
+LEAD_SOURCE_MULTIPLIERS = {
+    "Inbound": (0.7, 0.9),
+    "Outbound": (1.0, 1.3),
+    "Partner/Channel": (1.0, 1.4),
+    "Event/Webinar": (0.9, 1.1),
+    "Referral": (0.8, 1.0),
+    "Other": (1.0, 1.1)
+}
+
+# --- Representative performance multipliers ---
+# Models performance-based differences in deal velocity.
+REP_PERFORMANCE_MULTIPLIERS = {
+    "top": (0.7, 0.9),
+    "average": (0.9, 1.1),
+    "low": (1.1, 1.4)
+}
+
+# --- Account type multipliers ---
+# Existing customers have shorter cycles for expansion deals.
+ACCOUNT_STATUS_MULTIPLIERS = {
+    "prospect": (1.0, 1.0),
+    "customer": (0.7, 0.9),
+    "expansion": (0.6, 0.9)
+}
+
+# --- Re-entry probability ---
+# Likelihood that a deal regresses to an earlier stage.
+REENTRY_PROB_BASE = 0.08
+
+# --- Simulated AE (account executive) roster ---
+# Used for attributing stage changes in synthetic histories.
+NUM_SALES_REPS = 20
+SALES_REPS = [f"rep_{i+1}" for i in range(NUM_SALES_REPS)]

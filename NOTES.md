@@ -51,13 +51,15 @@ Recreate from file
 ## Testing
 
 ```bash 
-  python -m pytest -v
+  python -m pytest -vv
 ```
 
 ## Database
 
 Initialize database
-```python -m salespipeline.db.init_db```
+```bash
+  python -m salespipeline.db.init_db
+```
 
 Create & Insert Accounts
 ```bash

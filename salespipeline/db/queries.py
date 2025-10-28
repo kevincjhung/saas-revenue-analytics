@@ -1,11 +1,20 @@
-from sqlalchemy import select, update, delete, text
+from typing import List
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from uuid import UUID
-from typing import List, Optional
 
-from salespipeline.db.database import SessionLocal, engine  # Your session factory
-from salespipeline.db.models import Lead, Account, Contact, Opportunity, OpportunityStageHistory, Activity, MarketingEvent, BillingOrder
+
+from salespipeline.db.database import SessionLocal
+from salespipeline.db.models import (
+    Lead,
+    Account,
+    Contact,
+    Opportunity,
+    OpportunityStageHistory,
+    Activity,
+    MarketingEvent,
+    BillingOrder,
+)
 
 
 
@@ -35,8 +44,24 @@ def get_all_leads() -> List[Lead]:
         return []
 
 
+def get_all_opportunities() -> List[Opportunity]:
+    try:
+        with get_session() as session:
+            result = session.execute(select(Opportunity)).scalars().all()
+            return result
+    except SQLAlchemyError as e:
+        print(f"Error fetching all opportunities: {e}")
+        return []
+
+
+
 def main():
-    pass
+    opportunities = get_all_opportunities()
+    for opp in opportunities[:100]:
+        print(f"- ID: {opp.opportunity_id}, Stage: {getattr(opp, 'stage', 'N/A')}, "
+              f"Amount: {getattr(opp, 'amount', 'N/A')}, "
+              f"Lead Source: {getattr(opp, 'lead_source', 'N/A')}")
+    
 
 
 if __name__ == "__main__":
