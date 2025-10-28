@@ -152,8 +152,9 @@ PRODUCT_LINES = {
 CURRENCY = "CAD"
 
 # Pipeline stages and their relative occurrence frequencies
-STAGES = ["Prospecting", "Discovery", "Proposal", "Negotiation", "Closed"]
-STAGE_WEIGHTS = [0.25, 0.31, 0.25, 0.19]
+# !STAGES = ["Prospecting", "Discovery", "Proposal", "Negotiation", "Closed"]
+
+# !STAGE_WEIGHTS = [0.25, 0.31, 0.25, 0.19]
 
 # Win probability ranges per stage — used to simulate stage-to-stage conversion likelihood
 STAGE_PROBABILITY_RANGES = {
@@ -210,6 +211,8 @@ STAGES = [
     "Negotiation",      # Legal, commercial, redlines
     "Closed"            # Won or lost
 ]
+
+STAGE_WEIGHTS = [0.45, 0.35, 0.2]
 
 # --- Base median duration per stage (in days) ---
 # Defines baseline cycle times before multipliers (deal size, source, etc.)

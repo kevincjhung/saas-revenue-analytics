@@ -39,6 +39,13 @@ def df_stage_histories():
 # STRUCTURAL TESTS
 # --------------------------------------------------------------------------
 
+def test_stage_consistency():
+    """Ensure both generators share the same stage schema."""
+    from salespipeline.params import config
+    assert "Prospecting" not in config.STAGES, "Prospecting should belong to leads only"
+    assert config.STAGES[-1] == "Closed"
+    
+
 def test_expected_columns(df_stage_histories):
     """Ensure all required columns are present."""
     expected_cols = {
@@ -101,7 +108,7 @@ def test_stage_progression_sanity(df_stage_histories):
 def test_reentry_behavior(df_stage_histories):
     """At least a small fraction (~5-10%) of deals should show re-entry behavior."""
     revisit_rate = df_stage_histories["stage_name"].str.contains("revisit").mean()
-    assert 0.03 <= revisit_rate <= 0.15, f"Revisit rate unrealistic: {revisit_rate:.2f}"
+    assert 0.01 <= revisit_rate <= 0.1, f"Revisit rate unrealistic: {revisit_rate:.2f}"
 
 
 def test_stage_count_distribution(df_stage_histories):

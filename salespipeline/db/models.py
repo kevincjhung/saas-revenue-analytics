@@ -106,7 +106,7 @@ class OpportunityStageHistory(Base):
     opportunity_id = Column(UUID(as_uuid=True), ForeignKey("opportunities.opportunity_id"), nullable=False)
     stage_name = Column(String(100))
     entered_at = Column(DateTime, nullable=False)
-    changed_by = Column(UUID(as_uuid=True))
+    changed_by = Column(String(50))
     notes = Column(String)
 
     # Relationships

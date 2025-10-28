@@ -21,7 +21,7 @@ from faker import Faker
 
 from salespipeline.db.queries import get_all_opportunities
 from salespipeline.params.config import (
-    STAGES,
+    STAGES, #! why stages not use
     BASE_STAGE_DURATIONS,
     DEAL_SIZE_THRESHOLDS,
     DEAL_SIZE_MULTIPLIERS,
@@ -145,16 +145,26 @@ def generate_stage_histories_for_opportunity(opportunity_id, acv, lead_source, r
         current_date += timedelta(days=days_in_stage)
 
         # Occasionally regress (revisit previous stage)
-        if random.random() < REENTRY_PROB_BASE and stage not in ("Discovery", "Closed"):
-            back_stage = stage_path[max(0, stage_path.index(stage) - 1)]
-            records.append({
-                "stage_history_id": str(uuid.uuid4()),
-                "opportunity_id": opportunity_id,
-                "stage_name": f"{back_stage} (revisit)",
-                "entered_at": current_date,
-                "changed_by": random.choice(SALES_REPS),
-                "notes": fake.sentence(nb_words=8)
-            })
+        # --- Re-entry dynamics tuned by deal complexity ---
+        if stage not in ("Discovery", "Closed"):
+            # Base re-entry probability adjusted by deal size
+            if deal_size == "small":
+                reentry_prob = REENTRY_PROB_BASE * 0.3   # ~2–3%
+            elif deal_size == "mid":
+                reentry_prob = REENTRY_PROB_BASE * 0.8   # ~5–6%
+            else:  # large / enterprise
+                reentry_prob = REENTRY_PROB_BASE * 1.3   # ~8–10%
+            
+            if random.random() < reentry_prob:
+                back_stage = stage_path[max(0, stage_path.index(stage) - 1)]
+                records.append({
+                    "stage_history_id": str(uuid.uuid4()),
+                    "opportunity_id": opportunity_id,
+                    "stage_name": f"{back_stage} (revisit)",
+                    "entered_at": current_date,
+                    "changed_by": random.choice(SALES_REPS),
+                    "notes": fake.sentence(nb_words=8)
+                })
 
     return records
 

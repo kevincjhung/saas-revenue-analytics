@@ -222,6 +222,7 @@ def generate_opportunities_df():
         for closed in is_closed
     ]
 
+    # If opportunity is open, picks stage randomly. else, assigns stage as closed. 
     stages, stage_probs = [], []
     for closed, outcome in zip(is_closed, close_outcomes):
         if closed:
