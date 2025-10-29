@@ -1,17 +1,3 @@
-"""
-opportunity_stage_histories_generator.py
-----------------------------------------
-Simulates the stage-level progression history of each opportunity,
-including variable stage paths, time-in-stage distributions, and occasional
-regressions (stage re-entries). Designed to mirror realistic CRM Opportunity
-History data as seen in Salesforce or HubSpot.
-
-Key realism improvements:
-- Newer/smaller deals may have only 1–2 stages (Discovery, Proposal).
-- Larger/older deals traverse more stages and regress more often.
-- Stage durations scale with deal size, source, rep performance, and account type.
-"""
-
 import uuid
 import random
 import numpy as np
@@ -21,7 +7,7 @@ from faker import Faker
 
 from salespipeline.db.queries import get_all_opportunities
 from salespipeline.params.config import (
-    STAGES, #! why stages not use
+    STAGES, 
     BASE_STAGE_DURATIONS,
     DEAL_SIZE_THRESHOLDS,
     DEAL_SIZE_MULTIPLIERS,

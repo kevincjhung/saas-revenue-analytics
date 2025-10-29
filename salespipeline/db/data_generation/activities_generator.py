@@ -1,6 +1,4 @@
 """
-activities_generator.py
------------------------
 Generates synthetic sales activity records linked to existing opportunities
 and contacts, designed to resemble CRM activity logs (Salesforce/HubSpot style).
 
@@ -40,7 +38,7 @@ from salespipeline.params.config import (
 # HELPERS
 # =============================================================================
 
-# TODO: consolidate config params, then tests
+
 def classify_deal_size(amount: float) -> str:
     """
     Classify opportunity as small/mid/large based on ACV thresholds defined in config.py.

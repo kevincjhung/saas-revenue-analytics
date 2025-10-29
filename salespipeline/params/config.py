@@ -344,5 +344,25 @@ DIRECTION_PROBS = {
 
 
 
+# -------------------------------------------------------------------
+# ACTIVITIES GENERATOR
+# -------------------------------------------------------------------
+
+ORDER_COUNT_WEIGHTS = {
+    "one": (0.7, (1, 1)),    # 70% have 1 active order
+    "few": (0.2, (2, 3)),    # 20% have 2–3 (renewal + upsell)
+    "many": (0.1, (4, 6)),   # 10% have 4+ (enterprise)
+}
+
+TERM_MONTHS_DIST = {
+    12: 0.70,
+    24: 0.15,
+    36: 0.05,
+    6: 0.10,   # <12-month pilots
+}
+
+
+
+
 
 

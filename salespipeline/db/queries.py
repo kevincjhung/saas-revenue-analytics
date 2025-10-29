@@ -16,7 +16,7 @@ from salespipeline.db.models import (
     BillingOrder,
 )
 
-# get_all_opportunities, get_all_contacts
+
 
 
 def get_session() -> Session:
@@ -66,12 +66,7 @@ def get_all_contacts() -> List[Contact]:
 
 
 def main():
-    opportunities = get_all_opportunities()
-    for opp in opportunities[:100]:
-        print(f"- ID: {opp.opportunity_id}, Stage: {getattr(opp, 'stage', 'N/A')}, "
-              f"Amount: {getattr(opp, 'amount', 'N/A')}, "
-              f"Lead Source: {getattr(opp, 'lead_source', 'N/A')}")
-    
+    pass
 
 
 if __name__ == "__main__":

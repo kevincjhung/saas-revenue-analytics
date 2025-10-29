@@ -25,10 +25,11 @@ def df_opps(monkeypatch):
 
 # --- Basic structure and schema tests --- #
 
-def test_row_count(df_opps):
-    """Ensure the generated DataFrame is not empty and matches approximate expectations."""
-    assert len(df_opps) > 0
-    assert "opportunity_id" in df_opps.columns
+# ! TEST TO BE MOVED SEPARATE FILE FOR INTEGRATION TESTING
+# def test_row_count(df_opps):
+#     """Ensure the generated DataFrame is not empty and matches approximate expectations."""
+#     assert len(df_opps) > 0
+#     assert "opportunity_id" in df_opps.columns
 
 
 def test_expected_columns(df_opps):

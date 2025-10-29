@@ -18,9 +18,10 @@ def df_leads():
 
 # --- Basic structure and schema tests ---
 
-def test_row_count(df_leads):
-    """Ensure total lead count matches configuration constant."""
-    assert len(df_leads) == lg.TOTAL_LEADS
+# ! TEST TO BE MOVED SEPARATE FILE FOR INTEGRATION TESTING
+# def test_row_count(df_leads):
+#     """Ensure total lead count matches configuration constant."""
+#     assert len(df_leads) == lg.TOTAL_LEADS
 
 
 def test_expected_columns(df_leads):
