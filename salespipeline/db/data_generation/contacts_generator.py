@@ -1,0 +1,85 @@
+import pandas as pd
+import numpy as np
+import random
+from faker import Faker
+from datetime import timedelta
+import uuid
+from salespipeline.db.queries import get_all_leads
+
+fake = Faker()
+fake.unique.clear() 
+
+from salespipeline.params.config import (
+    CONTACTS_PER_LEAD,
+    CONTACTS_PER_LEAD_WEIGHTS,
+    TITLE_DISTRIBUTION,
+    GEO_DISTRIBUTION
+)
+
+
+
+def convert_leads_to_df():
+    """
+    Convert a list of Lead ORM objects into a pandas DataFrame.
+    """
+    leads = get_all_leads()
+    
+    if not leads:
+        raise ValueError("\n No leads returned from database. Check get_all_leads().")
+
+    data = []
+    for lead in leads:
+        data.append({
+            "lead_id": str(lead.lead_id),
+            "account_id": str(lead.account_id) if getattr(lead, "account_id", None) else None,
+            "created_at": lead.created_at,
+            "email": lead.email,
+            "lead_source": lead.lead_source
+        })
+
+    df_leads = pd.DataFrame(data)
+
+    # Ensure created_at is datetime
+    df_leads["created_at"] = pd.to_datetime(df_leads["created_at"], errors="coerce")
+
+    return df_leads
+
+
+def generate_contacts_from_leads(df_leads: pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a DataFrame of leads, generate corresponding contacts.
+    Each lead produces 1–3 contacts (weighted), created within 14 days of lead date.
+    """
+    contact_rows = []
+
+    for _, lead in df_leads.iterrows():
+        num_contacts = random.choices(CONTACTS_PER_LEAD, weights=CONTACTS_PER_LEAD_WEIGHTS, k=1)[0]
+
+        for _ in range(num_contacts):
+            contact_id = uuid.uuid4()
+            created_at = lead["created_at"] + timedelta(days=random.randint(0, 14))
+            title = random.choices(list(TITLE_DISTRIBUTION.keys()), weights=list(TITLE_DISTRIBUTION.values()), k=1)[0]
+            geo = random.choices(list(GEO_DISTRIBUTION.keys()), weights=list(GEO_DISTRIBUTION.values()), k=1)[0]
+            email = fake.unique.email()
+
+            contact_rows.append({
+                "contact_id": contact_id,
+                "lead_id": lead["lead_id"],
+                "account_id": lead["account_id"],
+                "created_at": created_at,
+                "email": email,
+                "title": title,
+                "geo": geo
+            })
+
+    df_contacts = pd.DataFrame(contact_rows)
+    return df_contacts
+
+
+if __name__ == "__main__":
+    
+    df_leads = convert_leads_to_df()
+    df_contacts = generate_contacts_from_leads(df_leads)
+    df_contacts.to_csv("contacts.csv", index=False)
+    print("\n✅ Generated contacts.csv successfully.")
+    

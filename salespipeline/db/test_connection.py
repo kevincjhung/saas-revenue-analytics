@@ -1,6 +1,3 @@
-# Run from root: 
-# python -c "from sqlalchemy import create_engine; from sqlalchemy.orm import sessionmaker, declarative_base; from dotenv import load_dotenv; print('Imports work!')"
-
 from sqlalchemy import text
 from salespipeline.db.database import engine
 
