@@ -16,6 +16,7 @@ from salespipeline.db.models import (
     BillingOrder,
 )
 
+# get_all_opportunities, get_all_contacts
 
 
 def get_session() -> Session:
@@ -51,6 +52,15 @@ def get_all_opportunities() -> List[Opportunity]:
             return result
     except SQLAlchemyError as e:
         print(f"Error fetching all opportunities: {e}")
+        return []
+
+def get_all_contacts() -> List[Contact]:
+    try:
+        with get_session() as session:
+            result = session.execute(select(Contact)).scalars().all()
+            return result
+    except SQLAlchemyError as e:
+        print(f"Error fetching all contacts: {e}")
         return []
 
 

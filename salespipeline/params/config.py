@@ -151,11 +151,6 @@ PRODUCT_LINES = {
 # Currencies
 CURRENCY = "CAD"
 
-# Pipeline stages and their relative occurrence frequencies
-# !STAGES = ["Prospecting", "Discovery", "Proposal", "Negotiation", "Closed"]
-
-# !STAGE_WEIGHTS = [0.25, 0.31, 0.25, 0.19]
-
 # Win probability ranges per stage — used to simulate stage-to-stage conversion likelihood
 STAGE_PROBABILITY_RANGES = {
     "Prospecting": (0.05, 0.10),
@@ -272,3 +267,82 @@ REENTRY_PROB_BASE = 0.08
 # Used for attributing stage changes in synthetic histories.
 NUM_SALES_REPS = 20
 SALES_REPS = [f"rep_{i+1}" for i in range(NUM_SALES_REPS)]
+
+
+# -------------------------------------------------------------------
+# ACTIVITIES GENERATOR
+# -------------------------------------------------------------------
+
+ACTIVITY_TYPE_WEIGHTS = {
+    "email": 0.50,
+    "call": 0.30,
+    "meeting": 0.12,
+    "demo": 0.08,
+}
+
+ACTIVITY_OUTCOME_PROBS = {
+    "email": {
+        "opened": 0.6,
+        "replied": 0.1,
+        "no_response": 0.3,
+    },
+    "call": {
+        "connected": 0.4,
+        "no_answer": 0.5,
+        "bad_number": 0.1,
+    },
+    "meeting": {
+        "attended": 0.8,
+        "no_show": 0.2,
+    },
+    "demo": {
+        "completed": 0.9,
+        "cancelled": 0.1,
+    },
+}
+
+WEEKDAY_WEIGHTS = {
+    0: 0.10,  # Monday
+    1: 0.22,  # Tuesday
+    2: 0.24,  # Wednesday
+    3: 0.22,  # Thursday
+    4: 0.12,  # Friday
+    5: 0.08,  # Saturday
+    6: 0.02,  # Sunday
+}
+
+HOUR_WEIGHTS = {
+    9: 0.10,
+    10: 0.15,
+    11: 0.20,
+    12: 0.10,
+    13: 0.10,
+    14: 0.15,
+    15: 0.15,
+    16: 0.05,
+}
+
+# Avg number of activities per opportunity by ACV range
+ACTIVITY_COUNT_BY_DEAL_SIZE = {
+    "small": (4, 8),
+    "mid": (8, 15),
+    "large": (12, 25),
+}
+
+# Contact engagement density by deal size
+CONTACT_COUNT_BY_DEAL_SIZE = {
+    "small": (1, 2),
+    "mid": (2, 5),
+    "large": (5, 10),
+}
+
+# Ratio of outbound vs inbound activities
+DIRECTION_PROBS = {
+    "outbound": 0.75,
+    "inbound": 0.25,
+}
+
+
+
+
+

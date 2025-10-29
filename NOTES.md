@@ -78,7 +78,12 @@ Create & Insert Accounts
   python -m salespipeline.db.data_loading.load_opportunities
 ``` 
 
+Database column migration -- SQL example
 
+```sql
+  ALTER TABLE opportunity_stage_history
+  ALTER COLUMN changed_by TYPE VARCHAR(50)
+```
 
 
 ## Data model

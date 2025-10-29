@@ -29,7 +29,7 @@ from salespipeline.params.config import (
     REP_PERFORMANCE_MULTIPLIERS,
     ACCOUNT_STATUS_MULTIPLIERS,
     REENTRY_PROB_BASE,
-    SALES_REPS,
+    SALES_REPS
 )
 
 fake = Faker()
