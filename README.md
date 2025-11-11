@@ -189,12 +189,12 @@ Entities are defined as relational objects (Accounts, Leads, Contacts, Opportuni
 Data generation encodes realistic operational logic: opportunity stage probabilities, segment-specific sales cycles, lead-source mix, and renewal behavior consistent with mid-market SaaS benchmarks.
 
 **Analytical Layer**  
-Revenue metrics—ARR composition, GRR/NRR, churn, pipeline coverage, and funnel velocity—are computed directly from the base schema using SQL and Python.  
+Revenue metrics - ARR composition, GRR/NRR, churn, pipeline coverage, and funnel velocity—are computed directly from the base schema using SQL and Python.  
 Each metric maps to a defined RevOps KPI and reconciles across all related entities, ensuring one consistent version of revenue truth.
 
 **Data Validation and Statistical Realism**  
 All generated data is validated through automated tests to confirm consistency, referential integrity, and expected operational ratios.  
-The dataset incorporates realistic statistical variation—log-normal revenue distributions, right-skewed stage durations, and source-dependent conversion rates—to reflect the inherent volatility of real SaaS pipelines.  
+The dataset incorporates realistic statistical variation—log-normal revenue distributions, right-skewed stage durations, and source-dependent conversion rates to reflect the inherent volatility of real SaaS pipelines.  
 These controls ensure that reported KPIs (ARR, NRR, win rate, churn) fall within credible business ranges and can be interpreted using standard industry benchmarks.
 
 **Governance and Reproducibility**  
