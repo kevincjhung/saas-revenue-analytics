@@ -130,7 +130,7 @@ Table opportunities {
   created_at timestamp [default: `now()`]
   close_date timestamp
   amount numeric(15,2) [note: 'Deal value']
-  currency varchar(10) [default: 'USD']
+  currency varchar(10) [default:' CAD']
   stage varchar(100) [note: 'Current sales stage']
   stage_probability numeric(5,2) [note: 'System or manually assigned probability (0–1)']
   lead_source varchar(50)

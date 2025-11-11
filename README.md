@@ -1,180 +1,213 @@
-# Sales Pipeline
+# Full-Funnel Revenue Analytics for Mid-Market B2B SaaS
 
-This synthetic dataset models a **mid-market B2B SaaS company** at a scaling growth stage (Series B–D).  
-The purpose is to simulate realistic CRM, pipeline, and revenue operations data for analytics, forecasting, and model training.
-
-
-# Data Generation Parameters
-
-## 1. Business Profile
-
-
-
-| Attribute | Description |
-|------------|--------------|
-| **Company Type** | B2B SaaS (sales-led, subscription revenue) |
-| **Stage** | Series B – D (growth-phase, structured GTM) |
-| **Headcount** | 300 – 500 employees |
-| **Annual Recurring Revenue (ARR)** | \$30 – \$150 million |
-| **Customer Base** | 200 – 1 500 active customers |
-| **Total Accounts (CRM)** | 2 000 – 5 000 including prospects, churned, and dormant |
-| **Sales Model** | Hybrid inbound + outbound, BDR/AE pairing |
-| **Contract Motion** | Annual SaaS subscriptions with renewals and expansion orders |
-
-### Context
-
-This company represents a *“mature startup”* — large enough for specialization (BDRs, AEs, Customer Success, RevOps) but still mid-market in complexity.  
-Sales velocity, contract values, and deal cycles align with a SaaS vendor selling to SMB and mid-market customers rather than true enterprise.
+A synthetic data environment designed to replicate the operational structure of a mid-market B2B SaaS company.  
+The dataset and analytical framework model pipeline performance, retention, and recurring revenue across the customer lifecycle.
 
 ---
 
-## 2. Embedded Trends and Assumptions
+## 1. Business Context
 
-The data generator encodes behavioral, temporal, and probabilistic trends observed in real SaaS go-to-market systems 
-Each table reflects a different layer of the revenue engine — from marketing inflow to billing.
+This project was developed to represent the analytical foundation of a mature revenue organization.  
+It reproduces the schema, behavioral patterns, and key performance indicators that would be expected in a CRM-to-data-warehouse pipeline supporting Sales, Marketing, and Customer Success functions.
 
----
+**Company Profile (assumed operating model)**  
+- Headcount: 300 – 500  
+- Annual Recurring Revenue (ARR): $30 – $150 M  
+- Customer base: SMB to Mid-Market (50 – 2,500 employees)  
+- Sales motion: hybrid inbound / outbound, AE-BDR handoff model  
+- Average sales cycle: 30 – 180 days  
+- Subscription term: 12–36 months  
 
-### 🏢 **Accounts**
+**Objective**  
+To provide a realistic, end-to-end dataset that supports the full range of metrics used by Revenue Operations teams:
+- ARR composition (new, expansion, renewal)  
+- Retention and churn analysis (GRR, NRR)  
+- Pipeline health and forecast coverage  
+- Funnel conversion and velocity  
+- Stage progression and opportunity aging  
+- Billing and renewal cadence  
 
-Represents all prospects and customers known to the company.
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Volume** | 2 000 – 5 000 total accounts |
-| **Lifecycle Mix** | 25–35 % active customers · 45–55 % open/pipeline · 15–25 % dormant/disqualified |
-| **Industry Distribution** | Professional Services (20 %) · Technology (25 %) · Manufacturing (20 %) · Finance (20 %) · Healthcare (15 %) |
-| **Customer Revenue (log-normal)** | SMB (1–10 M) 40 % · Mid-Market (10–100 M) 40 % · Upper-Mid (100–500 M) 15 % · Enterprise (500 M +) 5 % |
-| **Temporal Pattern** | 40 % created in the past 12 months · 60 % spread over 2 years |
+**Implementation Summary**  
+The project is implemented in Python using SQLAlchemy for schema definition and PostgreSQL for storage.  
+Synthetic data generation follows realistic business distributions for deal size, stage duration, and customer segmentation.  
+All data is validated through pytest to ensure internal consistency prior to analytical queries.
 
-**Interpretation:**  
-This base layer creates a realistic revenue pyramid — many smaller prospects, fewer large anchors, and recency bias toward recent pipeline growth.
 
----
+## 2. Data Model
 
-### 👥 **Leads**
+The data model mirrors a typical CRM and revenue-data-warehouse integration.  
+It is designed to support attribution, funnel analysis, and recurring-revenue reporting across the full customer lifecycle.
 
-Models top-of-funnel marketing and outbound generation activity.
+![Entity-Relationship Diagram](/static/ERD.png)
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Monthly Volume** | 800 – 2 000 inbound · 400 – 1 000 outbound |
-| **Weekday Pattern** | Activity peaks Tue–Thu (20–25 % each) · dips Mon/Fri · light weekend inflow |
-| **Seasonality** | Slower in summer (Jul–Aug) and Dec holidays |
-| **Lead Sources** | Website / Organic 25–35 % · Paid 15–25 % · Outbound 20–30 % · Events 5–10 % · Referral 5–10 % · Other 0–5 % |
-| **Owner Assignment** | 20 BDRs, round-robin with mild bias favoring top performers |
-| **Account Linkage** | 65 % new accounts · 35 % existing |
-| **MQL Rate** | 10 – 20 % overall; Paid 8–12 % · Organic 15–25 % · Outbound 20–30 % (targeted) |
+### Core Entities
 
-**Interpretation:**  
-Lead inflow mirrors a healthy inbound/outbound mix, reflecting both marketing maturity and outbound prospecting motion.
+**Accounts**  
+Represents both prospects and customers. Each record contains firmographic attributes such as industry, revenue band, and status category (prospect, customer, churned).  
+Accounts are the primary join key for all downstream metrics, including ARR and retention.
 
----
+**Leads**  
+Top-of-funnel records originating from inbound or outbound sources.  
+Each lead is timestamped, source-coded, and linked to an owning BDR.  
+Lead qualification logic determines MQL conversion and eventual opportunity creation.
 
-### 📇 **Contacts**
+**Contacts**  
+Named individuals associated with an account and/or lead.  
+Used to model buying committees and engagement breadth.  
+Titles and regions support segmentation for outreach and coverage analysis.
 
-Represents buying-committee stakeholders tied to leads and accounts.
+**Opportunities**  
+Represents discrete revenue events—new business, expansions, or renewals.  
+Each opportunity progresses through defined stages (prospecting, discovery, proposal, negotiation, closed).  
+Stage probabilities and cycle durations follow mid-market SaaS norms, enabling weighted forecasts and velocity analysis.
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Contacts per Lead** | 1 – 3 (majority = 1) |
-| **Contacts per Account** | 1 – 10 depending on size |
-| **Titles** | VP/Director 20–25 % · Manager 40–50 % · IC 20–25 % · Other 5–10 % |
-| **Geo Distribution** | North America 60–70 % (US 50 %, CA 10–20 %) · Europe 15–20 % · APAC 5–10 % · ROW 5 % |
-| **Timing** | Created within 14 days of lead creation |
+**Opportunity Stage History**  
+Captures stage transitions over time to support stage-level throughput, time-in-stage benchmarks, and re-entry behavior.  
+Serves as the foundation for deal-aging and pipeline-velocity reporting.
 
-**Interpretation:**  
-Recreates multi-stakeholder buying processes typical of mid-market SaaS sales, with geographic concentration in NA + EU.
+**Activities**  
+Logs rep-level execution (emails, calls, meetings, demos).  
+Provides visibility into engagement density and cadence effectiveness by opportunity and contact.
 
----
+**Billing Orders**  
+Represents invoiced revenue linked to closed-won opportunities.  
+Includes term length, billing amount, and renewal dates, forming the source of truth for ARR, GRR, NRR, and churn calculations.
 
-### 💼 **Opportunities**
-
-Captures the mid-funnel sales pipeline and forecasting dataset.
-
-| Dimension | Assumption |
-|------------|-------------|
-| **Opportunities per Account** | 1 – 5 over 1–2 years (net new + expansions) |
-| **Composition** | 70 % new business · 30 % renewal / expansion |
-| **AE Headcount** | 20 AEs × 20–40 active opps each (≈ 400 – 800 total) |
-| **Sales Cycle** | 60–120 days median; 10 % < 30 d, 10 % > 180 d |
-| **Typical ACV** | 10 K – 100 K; log-normal right-skewed |
-| **ACV by Source** | Inbound 15–30 K · Outbound 30–60 K · Partner 50–100 K · Event 10–20 K · Referral 25–50 K |
-| **Rep Performance Skew** | Top 20 % × 1.5 ACV · Bottom 20 % × 0.7 ACV |
-| **Pipeline Stage Mix** | Prospecting 20 % · Discovery 25 % · Proposal 20 % · Negotiation 15 % · Closed 20 % |
-| **Win Probabilities** | Prospecting 5–10 % → Negotiation 45–70 %; overall 8–15 % win rate |
-| **Close Outcomes** | Won 30–35 % · Lost 55–60 % · Disqualified 5–10 % |
-| **Quarterly Seasonality** | Creation spikes Q1 & Q3 · Closures Q2 & Q4 |
-
-**Interpretation:**  
-Reflects a mature sales process with predictable seasonality and realistic win/loss dynamics aligned to fiscal behavior.
+**Marketing Events** *(optional extension)*  
+Captures campaign touchpoints (webinar attendance, form submissions, paid clicks) for attribution and top-of-funnel analysis.
 
 ---
 
-### 🕓 **Opportunity Stage History**
+Each entity is linked through foreign-key relationships consistent with Salesforce-style CRM architecture.  
+This structure allows analytical queries to trace a complete chain from initial lead acquisition to billed revenue and retention outcomes.
 
-Captures the time-in-stage behavior and re-entry patterns for opportunities.
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Median Stage Durations** | Prospecting 7–14 d · Discovery 10–25 d · Proposal 14–30 d · Negotiation 20–45 d |
-| **Heavy Tail Behavior** | 95th pct 3–6× median |
-| **Re-Entry Rate** | 5–10 % revisit prior stages (“recycle / revive”) |
-| **Deal Size Scaling** | Small 0.6× median · Mid 1× · Large 1.5–3× |
-| **Lead Source Bias** | Inbound 0.7–0.9× median · Outbound 1–1.3× · Partner 1.3× negotiation |
-| **Rep Performance Bias** | Top reps 0.8× median duration; low reps 1.3× + stall risk |
-| **Existing Customer Bias** | Shorter discovery/proposal phases |
+## 3. Analytical Framework
 
-**Interpretation:**  
-The progression data models stochastic, log-normal dwell times with realistic recycling behavior.
+The analytical layer reflects the recurring performance questions addressed in executive reviews and operational dashboards.  
+Each group of metrics corresponds to a standard decision domain within Revenue Operations.
 
 ---
 
-### 📞 **Activities**
+### 3.1 Executive Revenue Overview
 
-Simulates logged sales activities tied to opportunities and contacts.
+Focuses on topline performance and retention health.  
+All calculations derive from the `billing_orders` table, reconciled to `opportunities` and `accounts`.
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Activity Volume** | Mean 6–15 per opportunity, right-skewed |
-| **Contacts per Deal** | < 10 K ACV → 1–2 · 10–50 K → 2–5 · > 50 K → 5–10 |
-| **Type Mix** | Email 45–55 % · Call 25–35 % · Meeting 10–15 % · Demo 5–10 % |
-| **Temporal Pattern** | Tue–Thu peaks · 9 a.m.–4 p.m. density · Q1 & Q4 busiest |
-| **Direction** | Outbound 70–80 % · Inbound 20–30 % |
-| **Outcome Rates** | Email 60 % opened / 10 % replied / 30 % no response · Call 40 % connected / 50 % no answer / 10 % bad number · Meeting 80 % attended / 20 % no show |
+**Key Metrics**
+- **ARR Composition:** New, Expansion, and Renewal ARR by month and quarter  
+- **Retention and Churn:** Gross Revenue Retention (GRR), Net Revenue Retention (NRR), Logo and Dollar Churn  
+- **Customer Economics:** Active customers, average ACV, average contract term, customer count by segment  
 
-**Interpretation:**  
-Captures operational cadence — heavy weekday emailing, outbound dominance, and predictable working-hour clustering.
+Purpose: quantify sustainable revenue growth and retention efficiency.
 
 ---
 
-### 💳 **Billing Orders**
+### 3.2 Pipeline Health and Forecasting
 
-Represents recognized revenue contracts linked to closed-won opportunities.
+Evaluates forward-looking revenue potential and attainment risk.  
+Data sourced primarily from `opportunities` and `stage_history`.
 
-| Dimension | Assumption |
-|------------|-------------|
-| **Origin** | One or more orders per closed-won opportunity |
-| **Per Account Mix** | 70 % one active order · 20 % 2–3 orders · 10 % 4+ orders (enterprise) |
-| **Amount Logic** | Initial = 90–110 % of opp ACV · renewals/upsells = 20–60 % of prior |
-| **Timing** | Initial = 5–15 d post-close · renewals ≈ 12 mo ± 30 d |
-| **Seasonality** | Revenue bookings skew Q2 & Q4; month-end bias |
-| **Term Distribution** | 12 mo 70 % · 24 mo 15 % · 36 mo 5 % · < 12 mo 10 % |
+**Key Metrics**
+- Total and weighted pipeline by expected close date  
+- Stage distribution and age  
+- Pipeline coverage versus quota (e.g., 3× rule)  
+- Pipeline creation and slippage trends  
+- Forecast accuracy: stage-weighted, rep-weighted, and probabilistic (Monte Carlo) scenarios  
 
-
-**Interpretation:**  
-Models a subscription revenue stream with annual renewal cadence and mild fiscal-quarter clustering.
+Purpose: provide visibility into sales execution pace and forecast reliability.
 
 ---
 
-## 3. Cross-Table Dynamics
+### 3.3 Funnel Conversion and Velocity
 
-| Mechanism | Description |
-|------------|-------------|
-| **Top-Performer Skew** | 80/20 Pareto distribution of AE performance impacts both opportunity volume and ACV. |
-| **Temporal Coherence** | Weekly (Tue–Thu) and quarterly (Q2/Q4) patterns propagate across leads, opps, activities, billing. |
-| **Relational Integrity** | All entities connect via valid foreign keys (Lead → Contact → Opportunity → Billing). |
-| **Right-Skew Distributions** | Log-normal noise applied to revenues, stage durations, and activity counts — few high-volume accounts dominate. |
-| **Lifecycle Echo** | Renewals and upsells appear ≈ 12 mo after initial billing, mirroring real SaaS expansion curves. |
+Assesses efficiency across Marketing, BDR, and Sales handoffs.  
+Integrates `leads`, `contacts`, and `opportunities`.
+
+**Key Metrics**
+- Lead → MQL → SQL → Opportunity → Win conversion rates  
+- Conversion by lead source, industry, and customer segment  
+- Speed-to-lead, speed-to-MQL, and average sales-cycle duration  
+
+Purpose: identify bottlenecks in the demand-to-revenue funnel and quantify the impact of lead source quality.
 
 ---
+
+### 3.4 Stage Progression and Deal Dynamics
+
+Measures operational efficiency within the active pipeline.  
+Derived from the `opportunity_stage_history` and `activities` tables.
+
+**Key Metrics**
+- Median time-in-stage and variance by deal size  
+- Stage-to-stage advancement probabilities  
+- Stalled and regressing deals (“re-entry” analysis)  
+- Quarter-end compression and holiday slowdowns  
+
+Purpose: monitor deal velocity, forecast hygiene, and rep-level execution cadence.
+
+---
+
+### 3.5 Bookings, Billing, and Renewal Cadence
+
+Bridges pipeline performance with recognized revenue.  
+Relies on `billing_orders` as the financial source of truth.
+
+**Key Metrics**
+- New bookings, renewals, and upsells by period  
+- Renewal rates and expansion ratio by cohort  
+- Billing order lag relative to close date  
+- Contract term mix (12 / 24 / 36 months) and renewal intervals  
+
+Purpose: ensure alignment between commercial reporting and actual recurring-revenue recognition.
+
+---
+
+### 3.6 Cohort and Segment Analysis
+
+Used for strategic planning and capacity modeling.  
+Combines data across all core entities.
+
+**Key Metrics**
+- ARR and NRR by acquisition cohort  
+- Churn and retention by customer segment and product line  
+- Sales-cycle duration and win rate by segment  
+- Revenue concentration by rep, region, and customer size  
+
+Purpose: surface long-term performance differentials across markets and products to inform investment and coverage decisions.
+
+
+## 4. Implementation Highlights
+
+The project is designed with the same structural rigor expected in an enterprise revenue data environment.  
+Each component—schema, data generation, validation, and analytics—is implemented to ensure consistency, interpretability, and reproducible business insights.
+
+**Architecture Overview**  
+The dataset is implemented in Python with SQLAlchemy and PostgreSQL, mirroring a CRM-to-data-warehouse integration.  
+Entities are defined as relational objects (Accounts, Leads, Contacts, Opportunities, Activities, Billing Orders, Stage History) with explicit foreign-key relationships to support traceability from marketing activity through booked revenue.  
+Data generation encodes realistic operational logic: opportunity stage probabilities, segment-specific sales cycles, lead-source mix, and renewal behavior consistent with mid-market SaaS benchmarks.
+
+**Analytical Layer**  
+Revenue metrics—ARR composition, GRR/NRR, churn, pipeline coverage, and funnel velocity—are computed directly from the base schema using SQL and Python.  
+Each metric maps to a defined RevOps KPI and reconciles across all related entities, ensuring one consistent version of revenue truth.
+
+**Data Validation and Statistical Realism**  
+All generated data is validated through automated tests to confirm consistency, referential integrity, and expected operational ratios.  
+The dataset incorporates realistic statistical variation—log-normal revenue distributions, right-skewed stage durations, and source-dependent conversion rates—to reflect the inherent volatility of real SaaS pipelines.  
+These controls ensure that reported KPIs (ARR, NRR, win rate, churn) fall within credible business ranges and can be interpreted using standard industry benchmarks.
+
+**Governance and Reproducibility**  
+Random-seed control and parameter versioning allow the entire environment to be rebuilt deterministically.  
+This design enables transparent metric reconciliation, auditability of assumptions, and repeatable analytics execution across environments.
+
+
+## 5. How to Run / Explore
+
+The repository is organized for straightforward inspection and reproducibility.  
+It can be reviewed without local execution, or optionally initialized in a standard Python + PostgreSQL environment.
+
+**Key locations**
+- `/salespipeline/db` — schema definitions and database initialization scripts  
+- `/salespipeline/db/data_generation` — synthetic data creation and load routines  
+- `/salespipeline/db/analytics` — analytical queries and KPI calculations (primary reference for viewers)
