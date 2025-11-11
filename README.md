@@ -1,7 +1,7 @@
 # Full-Funnel Revenue Analytics for Mid-Market B2B SaaS
 
 A synthetic data environment designed to replicate the operational structure of a mid-market B2B SaaS company.  
-The dataset and analytical framework model how revenue teams track pipeline performance, retention, and recurring revenue across the customer lifecycle.
+The dataset and analytical framework model pipeline performance, retention, and recurring revenue across the customer lifecycle.
 
 ---
 
